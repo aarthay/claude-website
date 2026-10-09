@@ -1,0 +1,22 @@
+<dialog class="lightbox" aria-labelledby="lightbox-title" data-lightbox>
+  <button class="lightbox__btn lightbox__btn--close" type="button" data-lightbox-close aria-label="Close">
+    <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <button class="lightbox__btn lightbox__btn--prev" type="button" data-lightbox-prev aria-label="Previous artwork">
+    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M15 4l-8 8 8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <button class="lightbox__btn lightbox__btn--next" type="button" data-lightbox-next aria-label="Next artwork">
+    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M9 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <figure class="lightbox__figure">
+    <img class="lightbox__image" src="data:," alt="" data-lightbox-image>
+    <figcaption class="lightbox__caption">
+      <h2 class="lightbox__title" id="lightbox-title" data-lightbox-title></h2>
+      <p class="lightbox__text" data-lightbox-caption></p>
+      <p class="lightbox__meta">
+        <span data-lightbox-count aria-live="polite"></span>
+        <a href="#" data-lightbox-link>Open details page</a>
+      </p>
+    </figcaption>
+  </figure>
+</dialog>

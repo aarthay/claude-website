@@ -1,0 +1,53 @@
+title: "Antonio Arthay, P.E. | Engineered Structural Sculptures"
+description: >-
+  Drawings, models and sculptures by Antonio Arthay, P.E., of Engineered
+  Structural Sculptures, LLC. The art of structure.
+lang: en
+
+# Left empty for local development. The GitHub Pages workflow passes the real
+# base path (for example /claude-website) with --baseurl at build time, so
+# every link must go through the relative_url filter.
+baseurl: ""
+url: ""
+
+collections:
+  artworks:
+    output: true
+    permalink: /artworks/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: artworks
+    values:
+      layout: artwork
+      home: true
+  - scope:
+      path: "about"
+    values:
+      layout: page
+      body_class: prose-page
+  - scope:
+      path: "contact"
+    values:
+      layout: page
+      body_class: prose-page
+      contact_details: true
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+exclude:
+  - assets/thumbs/manifest.json
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - scripts/
+  - vendor/
+  - node_modules/
+  - .github/

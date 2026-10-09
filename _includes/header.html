@@ -1,0 +1,34 @@
+{%- assign s = site.data.settings -%}
+{%- assign here = page.url | relative_url -%}
+{%- assign section = page.nav_section -%}
+{%- if page.collection == "artworks" and page.category -%}
+  {%- assign section = "/" | append: page.category | append: "s/" -%}
+{%- endif -%}
+<header class="site-header">
+  <div class="site-header__inner">
+    <div class="site-header__secondary">
+      <img src="{{ s.logo_secondary | relative_url }}" alt="{{ s.logo_secondary_alt }}" width="153" height="103">
+    </div>
+
+    <div class="site-header__brand">
+      <a class="brand-logo" href="{{ '/' | relative_url }}">
+        <img src="{{ s.logo_main | relative_url }}" alt="{{ s.logo_main_alt }}, home" width="373" height="183">
+      </a>
+      <a class="brand-tagline" href="{{ '/about/' | relative_url }}">The ART of STRUCTURE</a>
+    </div>
+
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        {%- assign nav = "Home|/,Designs|/designs/,Models|/models/,Sculptures|/sculptures/,About|/about/,Contact|/contact/,Login|/admin/" | split: "," -%}
+        {%- for item in nav -%}
+          {%- assign parts = item | split: "|" -%}
+          {%- assign href = parts[1] | relative_url -%}
+          {%- assign current = false -%}
+          {%- if here == href -%}{%- assign current = true -%}{%- endif -%}
+          {%- if section and section == parts[1] -%}{%- assign current = true -%}{%- endif -%}
+          <li><a href="{{ href }}"{% if current %} aria-current="page"{% endif %}>{{ parts[0] }}</a></li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+  </div>
+</header>

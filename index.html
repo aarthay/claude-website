@@ -1,0 +1,8 @@
+---
+title: Engineered Structural Sculptures
+gallery: true
+body_class: home
+---
+<h1 class="visually-hidden">Antonio Arthay, P.E., Engineered Structural Sculptures</h1>
+{%- assign items = site.artworks | where_exp: "a", "a.home != false" | sort: "order", "last" -%}
+{% include gallery.html items=items placeholders=30 %}

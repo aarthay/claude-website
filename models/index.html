@@ -1,0 +1,9 @@
+---
+title: Models
+description: Scale models of structural sculptures.
+gallery: true
+body_class: models
+---
+<h1 class="visually-hidden">Models</h1>
+{%- assign items = site.artworks | where: "category", "model" | sort: "order", "last" -%}
+{% include gallery.html items=items empty="No models have been added yet." %}

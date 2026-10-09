@@ -1,0 +1,9 @@
+---
+title: Sculptures
+description: Finished structural sculptures.
+gallery: true
+body_class: sculptures
+---
+<h1 class="visually-hidden">Sculptures</h1>
+{%- assign items = site.artworks | where: "category", "sculpture" | sort: "order", "last" -%}
+{% include gallery.html items=items empty="No sculptures have been added yet." %}

@@ -1,0 +1,15 @@
+# Site-wide details. Edit these from the admin area under "Site settings".
+# Anything still in [square brackets] is a placeholder to replace.
+
+logo_main: /assets/img/logo-main-placeholder.svg
+logo_main_alt: "Antonio Arthay, P.E. | Engineered Structural Sculptures, LLC"
+logo_secondary: /assets/img/logo-aa-design-placeholder.svg
+logo_secondary_alt: "AA Design, Palm Beach and Alicante"
+
+email: "[your email address]"
+phone: "[your phone number]"
+studios:
+  - name: "Palm Beach"
+    address: "[studio address, Palm Beach]"
+  - name: "Alicante"
+    address: "[studio address, Alicante]"

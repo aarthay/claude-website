@@ -1,0 +1,21 @@
+{%- comment -%}
+  Works out the image URLs for one artwork (include.art) and leaves them in
+  art_thumb, art_thumb_2x and art_large. The web-sized copies come from
+  scripts/make_images.py; when they don't exist yet (for example in a local
+  build that skipped the script) every URL falls back to the original upload.
+{%- endcomment -%}
+{%- assign art_file = include.art.image | split: "/" | last -%}
+{%- assign art_stem = art_file | split: "." | pop | join: "." -%}
+{%- assign art_base = "/assets/thumbs/" | append: art_stem -%}
+{%- assign art_thumb_path = art_base | append: "-480.webp" -%}
+{%- assign art_has_copies = site.static_files | where: "path", art_thumb_path | size -%}
+{%- if art_has_copies > 0 -%}
+  {%- assign art_thumb = art_thumb_path | relative_url -%}
+  {%- assign art_thumb_2x = art_base | append: "-960.webp" | relative_url -%}
+  {%- assign art_large = art_base | append: "-1800.webp" | relative_url -%}
+{%- else -%}
+  {%- assign art_thumb = include.art.image | relative_url -%}
+  {%- assign art_thumb_2x = art_thumb -%}
+  {%- assign art_large = art_thumb -%}
+{%- endif -%}
+{%- capture art_alt -%}{%- if include.art.alt and include.art.alt != "" -%}{{ include.art.alt }}{%- else -%}{{ include.art.title }}, {{ include.art.category | default: "artwork" }} by Antonio Arthay{%- endif -%}{%- endcapture -%}

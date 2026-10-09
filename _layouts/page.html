@@ -1,0 +1,32 @@
+---
+layout: default
+---
+{%- assign s = site.data.settings -%}
+<article class="prose">
+  <h1 class="prose__title">{{ page.title }}</h1>
+  {{ content }}
+
+  {%- if page.contact_details %}
+  <dl class="contact-list">
+    {%- if s.email and s.email != "" %}
+    <div>
+      <dt>Email</dt>
+      <dd>{% if s.email contains "@" %}<a href="mailto:{{ s.email }}">{{ s.email }}</a>{% else %}{{ s.email }}{% endif %}</dd>
+    </div>
+    {%- endif %}
+    {%- if s.phone and s.phone != "" %}
+    <div>
+      <dt>Phone</dt>
+      {%- assign tel = s.phone | remove: " " | remove: "(" | remove: ")" | remove: "-" | remove: "." %}
+      <dd>{% if s.phone contains "[" %}{{ s.phone }}{% else %}<a href="tel:{{ tel }}">{{ s.phone }}</a>{% endif %}</dd>
+    </div>
+    {%- endif %}
+    {%- for studio in s.studios %}
+    <div>
+      <dt>{{ studio.name }} studio</dt>
+      <dd>{{ studio.address | escape | newline_to_br }}</dd>
+    </div>
+    {%- endfor %}
+  </dl>
+  {%- endif %}
+</article>

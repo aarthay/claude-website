@@ -1,0 +1,78 @@
+# Builds the site and publishes it to GitHub Pages on every push to main,
+# including each save made in the admin area.
+# One-time setup: Settings > Pages > Build and deployment > Source: GitHub Actions.
+name: Publish site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deployment finish; queue the newest one after it.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Restore web-sized images
+        uses: actions/cache@v4
+        with:
+          path: assets/thumbs
+          key: thumbs-${{ hashFiles('assets/artworks/**', 'scripts/make_images.py') }}
+          restore-keys: thumbs-
+
+      - name: Make web-sized images
+        run: |
+          python -m pip install --quiet "Pillow>=11,<13"
+          python scripts/make_images.py
+
+      - name: Set up Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      # The site's address comes from the Pages settings, so a custom domain
+      # added later is picked up without editing any files.
+      - name: Build with Jekyll
+        run: |
+          printf 'url: "%s"\n' "${{ steps.pages.outputs.origin }}" > "$RUNNER_TEMP/_config.pages.yml"
+          bundle exec jekyll build \
+            --config "_config.yml,$RUNNER_TEMP/_config.pages.yml" \
+            --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

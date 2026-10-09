@@ -1,0 +1,223 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms@0.233.0/schema/sveltia-cms.json
+#
+# Admin area for the site, at /admin/ (the "Login" link). Sveltia CMS reads
+# and writes the files in this repository; every save is a commit to `main`,
+# which republishes the site through .github/workflows/pages.yml.
+
+backend:
+  name: github
+  repo: aarthay/claude-website
+  branch: main
+  # Sign in by pasting a GitHub fine-grained personal access token (see README).
+  # A "Sign In with GitHub" button would need an OAuth relay; see README.
+  auth_methods: [token]
+
+app_title: Antonio Arthay site admin
+# Change these three if the site moves to a custom domain.
+site_url: https://aarthay.github.io/claude-website
+display_url: https://aarthay.github.io/claude-website/
+logout_redirect_url: https://aarthay.github.io/claude-website/
+
+# Where uploads go in the repo, and the path written into each entry.
+# The /claude-website prefix is added by the templates, not stored here.
+media_folder: assets/artworks
+public_folder: /assets/artworks
+
+media_libraries:
+  default:
+    config:
+      max_file_size: 52428800 # 50 MB, so camera photos are accepted before they're shrunk
+      slugify_filename: true
+      transformations:
+        # Photos are converted to WebP and capped at 2400px in the browser
+        # before upload, which keeps the repository small.
+        raster_image:
+          format: webp
+          quality: 88
+          width: 2400
+          height: 2400
+        svg:
+          optimize: true
+
+slug:
+  encoding: ascii # non-ASCII file names can break the Jekyll build
+  clean_accents: true
+  maxlength: 80
+
+output:
+  # Leave blank optional fields out of the files instead of writing empty values.
+  omit_empty_optional_fields: true
+
+collections:
+  - name: designs
+    label: Designs
+    label_singular: Design
+    description: Drawings and design studies.
+    folder: _artworks
+    filter: { field: category, value: design }
+    slug: "{{slug}}"
+    summary: "{{title}} {{home | ternary('', '(not on home page)')}}"
+    thumbnail: image
+    sortable_fields:
+      fields: [order, title, year]
+      default: { field: order, direction: ascending }
+    # The field definitions below are reused by Models and Sculptures.
+    fields:
+      - { name: category, widget: hidden, default: design }
+      - &title_field { name: title, label: Title, widget: string }
+      - &image_field
+        name: image
+        label: Image
+        widget: image
+        hint: A photo or scan of the work. Large photos are resized automatically.
+      - &alt_field
+        name: alt
+        label: Image description
+        widget: string
+        required: false
+        hint: >-
+          One sentence describing the work for people using screen readers, for
+          example "Blue and grey curved forms rising from a narrow base".
+          Leave blank to use the title.
+      - &year_field
+        name: year
+        label: Year
+        widget: number
+        value_type: int
+        min: 1900
+        max: 2100
+        required: false
+      - &order_field
+        name: order
+        label: Position
+        widget: number
+        value_type: int
+        default: 100
+        hint: Lower numbers appear first. Use gaps (10, 20, 30) so you can slot new work in between.
+      - &home_field
+        name: home
+        label: Show on home page
+        widget: boolean
+        default: true
+      - &body_field
+        name: body
+        label: Description
+        widget: markdown
+        required: false
+        hint: Optional. Shown in the full-screen viewer and on the work's own page.
+
+  - name: models
+    label: Models
+    label_singular: Model
+    description: Scale models.
+    folder: _artworks
+    filter: { field: category, value: model }
+    slug: "{{slug}}"
+    summary: "{{title}} {{home | ternary('', '(not on home page)')}}"
+    thumbnail: image
+    sortable_fields:
+      fields: [order, title, year]
+      default: { field: order, direction: ascending }
+    fields:
+      - { name: category, widget: hidden, default: model }
+      - *title_field
+      - *image_field
+      - *alt_field
+      - *year_field
+      - *order_field
+      - *home_field
+      - *body_field
+
+  - name: sculptures
+    label: Sculptures
+    label_singular: Sculpture
+    description: Finished sculptures.
+    folder: _artworks
+    filter: { field: category, value: sculpture }
+    slug: "{{slug}}"
+    summary: "{{title}} {{home | ternary('', '(not on home page)')}}"
+    thumbnail: image
+    sortable_fields:
+      fields: [order, title, year]
+      default: { field: order, direction: ascending }
+    fields:
+      - { name: category, widget: hidden, default: sculpture }
+      - *title_field
+      - *image_field
+      - *alt_field
+      - *year_field
+      - *order_field
+      - *home_field
+      - *body_field
+
+  - name: pages
+    label: Pages
+    description: The About and Contact pages.
+    files:
+      - name: about
+        label: About
+        file: about/index.md
+        fields:
+          - { name: title, label: Page title, widget: string }
+          - name: description
+            label: Search engine summary
+            widget: string
+            hint: One sentence shown in search results and link previews.
+          - { name: body, label: Text, widget: markdown }
+      - name: contact
+        label: Contact
+        file: contact/index.md
+        fields:
+          - { name: title, label: Page title, widget: string }
+          - name: description
+            label: Search engine summary
+            widget: string
+            hint: One sentence shown in search results and link previews.
+          - name: body
+            label: Text
+            widget: markdown
+            hint: Shown above your contact details, which you edit under Site settings.
+
+  - name: settings
+    label: Site settings
+    description: Logos and contact details.
+    files:
+      - name: settings
+        label: Logos and contact details
+        file: _data/settings.yml
+        fields:
+          - name: logo_main
+            label: Main logo (centre of the header)
+            widget: image
+            media_folder: /assets/img
+            public_folder: /assets/img
+            media_libraries:
+              default:
+                config:
+                  transformations: {} # keep logos exactly as uploaded
+          - name: logo_main_alt
+            label: Main logo text
+            widget: string
+            hint: What the logo says, read aloud by screen readers.
+          - name: logo_secondary
+            label: AA Design logo (left of the header and in the footer)
+            widget: image
+            media_folder: /assets/img
+            public_folder: /assets/img
+            media_libraries:
+              default:
+                config:
+                  transformations: {}
+          - name: logo_secondary_alt
+            label: AA Design logo text
+            widget: string
+            hint: What the logo says, read aloud by screen readers.
+          - { name: email, label: Email, widget: string, required: false }
+          - { name: phone, label: Phone, widget: string, required: false }
+          - name: studios
+            label: Studios
+            label_singular: Studio
+            widget: list
+            fields:
+              - { name: name, label: Name, widget: string }
+              - { name: address, label: Address, widget: text }

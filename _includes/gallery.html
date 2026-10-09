@@ -1,0 +1,36 @@
+{%- comment -%}
+  Full-width grid of artwork tiles.
+    include.items         artworks to show, already filtered and sorted (ones without an image are skipped)
+    include.placeholders  number of blank tiles to show while there's no artwork yet
+    include.empty         message to show instead when there's no artwork and no placeholders
+{%- endcomment -%}
+{%- assign gallery_items = include.items | where_exp: "a", "a.image" -%}
+{%- if gallery_items.size > 0 -%}
+<ul class="gallery" data-gallery>
+  {%- for art in gallery_items -%}
+    {%- include artwork-src.html art=art -%}
+    <li class="gallery__item">
+      <a class="tile" href="{{ art.url | relative_url }}"
+         data-large="{{ art_large }}"
+         data-title="{{ art.title | escape }}"
+         data-caption="{{ art.content | strip_html | replace: "&amp;", "&" | replace: "&quot;", '"' | replace: "&#39;", "'" | replace: "&lt;", "<" | replace: "&gt;", ">" | normalize_whitespace | strip | truncate: 320 | escape }}">
+        <img src="{{ art_thumb }}"
+             srcset="{{ art_thumb }} 480w, {{ art_thumb_2x }} 960w"
+             sizes="(min-width: 1400px) 11vw, (min-width: 900px) 17vw, (min-width: 560px) 33vw, 50vw"
+             alt="{{ art_alt | strip | escape }}"
+             width="480" height="640"
+             {% if forloop.index > 20 %}loading="lazy" {% endif %}decoding="async">
+      </a>
+    </li>
+  {%- endfor -%}
+</ul>
+{%- elsif include.placeholders -%}
+<p class="visually-hidden">Artwork is being added to this page.</p>
+<ul class="gallery gallery--placeholder" aria-hidden="true">
+  {%- for i in (1..include.placeholders) -%}
+    <li class="gallery__item"><span class="tile tile--placeholder"></span></li>
+  {%- endfor -%}
+</ul>
+{%- else -%}
+<p class="gallery-empty">{{ include.empty }}</p>
+{%- endif -%}

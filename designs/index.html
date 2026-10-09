@@ -1,0 +1,9 @@
+---
+title: Designs
+description: Drawings and design studies for structural sculptures.
+gallery: true
+body_class: designs
+---
+<h1 class="visually-hidden">Designs</h1>
+{%- assign items = site.artworks | where: "category", "design" | sort: "order", "last" -%}
+{% include gallery.html items=items placeholders=30 empty="Designs are being added." %}

@@ -1,0 +1,31 @@
+---
+layout: default
+---
+{%- include artwork-src.html art=page -%}
+{%- assign siblings = site.artworks | where: "category", page.category | where_exp: "a", "a.image" | sort: "order", "last" -%}
+{%- for a in siblings -%}
+  {%- if a.url == page.url -%}
+    {%- assign i = forloop.index0 -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign prev_i = i | minus: 1 -%}
+{%- assign next_i = i | plus: 1 -%}
+{%- assign section = "/" | append: page.category | append: "s/" -%}
+{%- assign section_name = page.category | append: "s" | capitalize -%}
+<article class="artwork">
+  {%- if page.image %}
+  <figure class="artwork__figure">
+    <a href="{{ art_large }}"><img src="{{ art_large }}" alt="{{ art_alt | strip | escape }}" decoding="async"></a>
+  </figure>
+  {%- endif %}
+  <div class="artwork__text">
+    <h1 class="artwork__title">{{ page.title }}</h1>
+    {%- if page.year %}<p class="artwork__date">{{ page.year }}</p>{% endif %}
+    {{ content }}
+    <nav class="artwork__nav" aria-label="More {{ section_name | downcase }}">
+      {%- if prev_i >= 0 %}<a href="{{ siblings[prev_i].url | relative_url }}" rel="prev">Previous: {{ siblings[prev_i].title }}</a>{% endif %}
+      <a href="{{ section | relative_url }}">All {{ section_name | downcase }}</a>
+      {%- if next_i < siblings.size %}<a href="{{ siblings[next_i].url | relative_url }}" rel="next">Next: {{ siblings[next_i].title }}</a>{% endif %}
+    </nav>
+  </div>
+</article>
